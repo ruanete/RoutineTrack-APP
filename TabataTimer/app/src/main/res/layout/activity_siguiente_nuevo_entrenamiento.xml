@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SiguienteNuevoEntrenamiento">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/barra_superior"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="0dp"
+            app:cardBackgroundColor="@color/colorPrincipal"
+            app:contentPaddingBottom="10dp"
+            app:contentPaddingTop="40dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="EJERCICIOS"
+                    android:textAlignment="center"
+                    android:textColor="@color/cardview_light_background"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/barraInferior"
+            android:layout_below="@+id/barra_superior"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            android:padding="30dp"
+            android:background="@color/cardview_light_background">
+
+            <LinearLayout
+                android:id="@+id/scroll_ejercicios"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+        </ScrollView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/barraInferior"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            app:cardBackgroundColor="@color/colorPrincipal">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/boton_atras"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.25"
+                    android:background="?android:selectableItemBackground"
+                    app:srcCompat="@drawable/icono_paso_atras" />
+
+                <ImageButton
+                    android:id="@+id/boton_inicio"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="?android:selectableItemBackground"
+                    app:srcCompat="@drawable/icono_home" />
+
+                <ImageButton
+                    android:id="@+id/boton_siguiente"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.25"
+                    android:background="?android:selectableItemBackground"
+                    android:onClick="finalizarGuardadoEntrenamiento"
+                    app:srcCompat="@drawable/icono_siguiente_paso" />
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </RelativeLayout>
+</android.support.constraint.ConstraintLayout>
