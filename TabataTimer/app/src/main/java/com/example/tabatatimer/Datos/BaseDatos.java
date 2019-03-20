@@ -25,7 +25,6 @@ public class BaseDatos extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         // Comandos SQL
-        System.out.println("TAMOOOOOOOOOOOOO");
         sqLiteDatabase.execSQL("CREATE TABLE " + ColumnasEntrenamiento.TABLE_NAME + " ("
                 + ColumnasEntrenamiento._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + ColumnasEntrenamiento.ID + " INTEGER UNIQUE NOT NULL,"
@@ -41,11 +40,11 @@ public class BaseDatos extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL("CREATE TABLE " + ColumnasEjercicios.TABLE_NAME + " ("
                 + ColumnasEjercicios._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + ColumnasEjercicios.ID + " INTEGER NOT NULL REFERENCES " + ColumnasEntrenamiento.TABLE_NAME + "(" + ColumnasEntrenamiento.ID + "),"
+                + ColumnasEjercicios.ID_ENTRENAMIENTO + " INTEGER NOT NULL REFERENCES " + ColumnasEntrenamiento.TABLE_NAME + "(" + ColumnasEntrenamiento.ID + "),"
+                + ColumnasEjercicios.ID_EJERCICIO + " INTEGER NOT NULL,"
                 + ColumnasEjercicios.NOMBRE_EJERCICIO + " TEXT NOT NULL)"
         );
 
-        System.out.println("ENTRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     @Override
@@ -53,33 +52,23 @@ public class BaseDatos extends SQLiteOpenHelper {
         // No hay operaciones
     }
 
-    public Cursor getTodosEntrenamientos() {
-        return getReadableDatabase()
-                .query(
-                        ColumnasEntrenamiento.TABLE_NAME,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null);
-    }
-
-    public Cursor getEntrenamientoPorID(String entrenamientoID) {
-        Cursor c = getReadableDatabase().query(
-                ColumnasEntrenamiento.TABLE_NAME,
-                null,
-                ColumnasEntrenamiento.ID + " LIKE ?",
-                new String[]{entrenamientoID},
-                null,
-                null,
-                null);
-        return c;
-    }
-
     //METODOS PROBADOS FUNCIONANDO
+    public void guardarEjercicios(Entrenamiento entrenamiento) {
+        SQLiteDatabase bd = this.getWritableDatabase();
+
+        ContentValues ejercicio = new ContentValues();
+        for(int i=0;i<entrenamiento.getNumeroSeries();i++){
+            ejercicio.put(ColumnasEjercicios.ID_ENTRENAMIENTO,entrenamiento.getIDentrenamiento());
+            ejercicio.put(ColumnasEjercicios.ID_EJERCICIO,entrenamiento.getIDEjercicio(i));
+            ejercicio.put(ColumnasEjercicios.NOMBRE_EJERCICIO,entrenamiento.getEjercicio(i));
+            bd.insert(ColumnasEjercicios.TABLE_NAME,
+                    null,
+                    ejercicio);
+        }
+        bd.close();
+    }
+
     public void guardarEntrenamiento(Entrenamiento entrenamiento) {
-        //db.insert(ColumnasEjercicios.TABLE_NAME, null, entrenamiento.toContentValuesEjercicios());
         SQLiteDatabase bd = this.getWritableDatabase();
         bd.insert(
                 ColumnasEntrenamiento.TABLE_NAME,
@@ -88,7 +77,8 @@ public class BaseDatos extends SQLiteOpenHelper {
 
         ContentValues ejercicio = new ContentValues();
         for(int i=0;i<entrenamiento.getNumeroSeries();i++){
-            ejercicio.put(ColumnasEjercicios.ID,entrenamiento.getIDentrenamiento());
+            ejercicio.put(ColumnasEjercicios.ID_ENTRENAMIENTO,entrenamiento.getIDentrenamiento());
+            ejercicio.put(ColumnasEjercicios.ID_EJERCICIO,entrenamiento.getIDEjercicio(i));
             ejercicio.put(ColumnasEjercicios.NOMBRE_EJERCICIO,entrenamiento.getEjercicio(i));
             bd.insert(ColumnasEjercicios.TABLE_NAME,
                     null,
@@ -103,15 +93,16 @@ public class BaseDatos extends SQLiteOpenHelper {
 
         if (cursorEntrenamiento.moveToFirst()){
             do{
-                Cursor cursorEjercicios = getReadableDatabase().rawQuery("select nombre_ejercicio from " + ColumnasEjercicios.TABLE_NAME + " where id=?", new String[]{String.valueOf(cursorEntrenamiento.getInt(cursorEntrenamiento.getColumnIndex("id")))});
+                Cursor cursorEjercicios = getReadableDatabase().rawQuery("select nombre_ejercicio, id_ejercicio from " + ColumnasEjercicios.TABLE_NAME + " where id_entrenamiento=?", new String[]{String.valueOf(cursorEntrenamiento.getInt(cursorEntrenamiento.getColumnIndex("id")))});
                 Vector<String> ejercicios = new Vector<>();
+                Vector<Integer> IDEjercicios = new Vector<>();
                 if(cursorEjercicios.moveToFirst()){
                     do{
                         ejercicios.add(cursorEjercicios.getString(cursorEjercicios.getColumnIndex("nombre_ejercicio")));
+                        IDEjercicios.add(cursorEjercicios.getInt(cursorEjercicios.getColumnIndex("id_ejercicio")));
                     }while(cursorEjercicios.moveToNext());
                 }
-
-                System.out.println("IDDDDDDDDD: " + cursorEntrenamiento.getInt(cursorEntrenamiento.getColumnIndex("id")) + "\nEJERCICICOS: " + ejercicios);
+                cursorEjercicios.close();
 
                 entrenamientos.add(new Entrenamiento(
                         cursorEntrenamiento.getInt(cursorEntrenamiento.getColumnIndex("id")),
@@ -123,12 +114,34 @@ public class BaseDatos extends SQLiteOpenHelper {
                         cursorEntrenamiento.getInt(cursorEntrenamiento.getColumnIndex("numeroTabatas")),
                         cursorEntrenamiento.getInt(cursorEntrenamiento.getColumnIndex("descansoTabata")),
                         cursorEntrenamiento.getInt(cursorEntrenamiento.getColumnIndex("tiempoTotal")),
-                        ejercicios)
+                        ejercicios,
+                        IDEjercicios)
                 );
             }while(cursorEntrenamiento.moveToNext());
         }
         cursorEntrenamiento.close();
 
         return entrenamientos;
+    }
+
+    public void editarEntrenamiento(Entrenamiento entrenamiento){
+        SQLiteDatabase bd = this.getWritableDatabase();
+        ContentValues c = entrenamiento.toContentValuesEntrenamiento();
+
+        bd.update(ColumnasEntrenamiento.TABLE_NAME, c, "id = ?", new String[]{String.valueOf(entrenamiento.getIDentrenamiento())});
+
+        bd.close();
+    }
+
+    public void editarEjerciciosEntrenamiento(Entrenamiento entrenamiento){
+        SQLiteDatabase bd = this.getWritableDatabase();
+        Vector<ContentValues> values;
+        values = entrenamiento.toContentValuesEjercicios();
+
+        for (int i = 0; i < values.size(); i++) {
+            bd.update(ColumnasEjercicios.TABLE_NAME, values.get(i), "id_entrenamiento = ?", new String[]{String.valueOf(entrenamiento.getIDentrenamiento())});
+        }
+
+        bd.close();
     }
 }

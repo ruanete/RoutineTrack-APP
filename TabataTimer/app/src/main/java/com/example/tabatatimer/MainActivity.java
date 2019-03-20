@@ -25,45 +25,32 @@ import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
     Entrenamiento entrenamiento = null;
-    int numero_series = 0;
     BaseDatos bd = new BaseDatos(this);
     Vector<Entrenamiento> entrenamientosGuardados;
+    Entrenamiento entrenamientoEditar = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*entrenamiento = new Entrenamiento();
-        Entrenamiento entrenamiento1 = new Entrenamiento();
-        Entrenamiento entrenamiento2 = new Entrenamiento();
-        Entrenamiento entrenamiento3 = new Entrenamiento();
-
-        System.out.println("TAMOOOOOOOOOOOOO22222222");
-        bd.guardarEntrenamiento(entrenamiento);
-        bd.guardarEntrenamiento(entrenamiento1);
-        bd.guardarEntrenamiento(entrenamiento2);
-        bd.guardarEntrenamiento(entrenamiento3);
-
-        entrenamientosGuardados = bd.getEntrenamientos();
-        System.out.println("TAMAAAAAÑOOOOOO: " + entrenamientosGuardados.size());*/
-
         entrenamientosGuardados = bd.getEntrenamientos();
         generaScroll();
-
-        /*Bundle objetoRecibido =getIntent().getExtras();
-
-        if(objetoRecibido!=null){
-            entrenamiento=(Entrenamiento) objetoRecibido.getSerializable("entrenamiento");
-            numero_series = entrenamiento.getNumeroSeries();
-            entrenamiento.setIDentrenamiento(View.generateViewId());
-            generaScroll();
-        }*/
     }
 
     @SuppressLint("ResourceType")
     public void abrirNuevoEntrenamiento(View view){
         Intent intent = new Intent(this, NuevoEntrenamiento.class);
+        startActivity(intent);
+    }
+
+    public void abrirEditarEntrenamiento(View view){
+        Intent intent = new Intent(this, NuevoEntrenamiento.class);
+        Bundle bundle=new Bundle();
+        bundle.putSerializable("entrenamiento", entrenamientoEditar);
+        bundle.putSerializable("editar", true);
+        intent.putExtras(bundle);
+
         startActivity(intent);
     }
 
@@ -139,6 +126,15 @@ public class MainActivity extends AppCompatActivity {
             boton.setBackground(drawableFromTheme2);
 
             boton.setLayoutParams(botonCentralParams);
+
+            final int indice = i;
+            boton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    entrenamientoEditar = entrenamientosGuardados.get(indice);
+                    abrirEditarEntrenamiento(v);
+                }
+            });
 
             //Añado los dos botones y la imagen al relativeLayout
             entrenamientoLayout.addView(pesa);

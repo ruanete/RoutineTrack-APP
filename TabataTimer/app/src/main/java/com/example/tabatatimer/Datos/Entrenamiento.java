@@ -33,11 +33,11 @@ public class Entrenamiento implements Serializable {
         descansoTabata = 0;
         tiempoTotal = 0;
         ejercicios = new Vector<>();
-        ejercicios.add("Nombre del ejercicio 1");
+        //ejercicios.add("Nombre del ejercicio 1");
         IDEjercicios = new Vector<>();
     }
 
-    public Entrenamiento(int IDentrenamiento, String nombre, int tiempoPreparacion, int tiempoEjercicio, int tiempoDescanso, int numeroSeries, int numeroTabatas, int descansoTabata, int tiempoTotal, Vector<String> ejercicios){
+    public Entrenamiento(int IDentrenamiento, String nombre, int tiempoPreparacion, int tiempoEjercicio, int tiempoDescanso, int numeroSeries, int numeroTabatas, int descansoTabata, int tiempoTotal, Vector<String> ejercicios, Vector<Integer> IDEjercicios){
         this.IDentrenamiento = IDentrenamiento;
         this.nombre = nombre;
         this.tiempoPreparacion = tiempoPreparacion;
@@ -48,6 +48,7 @@ public class Entrenamiento implements Serializable {
         this.descansoTabata = descansoTabata;
         this.tiempoTotal = tiempoTotal;
         this.ejercicios = ejercicios;
+        this.IDEjercicios = IDEjercicios;
     }
 
     public int getIDentrenamiento(){
@@ -63,8 +64,11 @@ public class Entrenamiento implements Serializable {
     }
 
     public void inicializarEjercicios(){
-        for(int i=2;i<=numeroSeries;i++){
+        ejercicios.clear();
+        IDEjercicios.clear();
+        for(int i=1;i<=numeroSeries;i++){
             ejercicios.add("Nombre del ejercicio " + i);
+            IDEjercicios.add(View.generateViewId());
         }
     }
 
@@ -142,8 +146,16 @@ public class Entrenamiento implements Serializable {
         ejercicios.set(i, ejercicio);
     }
 
+    public void setEjercicios(Vector<String> ejercicios){
+        this.ejercicios = ejercicios;
+    }
+
     public int getIDEjercicio(int pos){
         return IDEjercicios.get(pos);
+    }
+
+    public int getIDEjercicioSize(){
+        return IDEjercicios.size();
     }
 
     public void setIDEjercicio(int i, int ID){
@@ -158,11 +170,16 @@ public class Entrenamiento implements Serializable {
         return ejercicios.get(pos);
     }
 
-    public ContentValues toContentValuesEjercicios() {
-        ContentValues values = new ContentValues();
-        values.put(ColumnasEjercicios.ID, IDentrenamiento);
-        for (int i = 0; i < numeroSeries; i++)
-            values.put(ColumnasEjercicios.NOMBRE_EJERCICIO, ejercicios.get(i));
+    public Vector<ContentValues> toContentValuesEjercicios() {
+        Vector<ContentValues> values = new Vector<>();
+        ContentValues value = new ContentValues();
+        //values.put(ColumnasEjercicios.ID_ENTRENAMIENTO, IDentrenamiento);
+        for (int i = 0; i < numeroSeries; i++) {
+            value.put(ColumnasEjercicios.ID_ENTRENAMIENTO, IDentrenamiento);
+            value.put(ColumnasEjercicios.ID_EJERCICIO, IDEjercicios.get(i));
+            value.put(ColumnasEjercicios.NOMBRE_EJERCICIO, ejercicios.get(i));
+            values.add(value);
+        }
         return values;
     }
 

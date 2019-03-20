@@ -23,6 +23,7 @@ public class SiguienteNuevoEntrenamiento extends AppCompatActivity {
     Entrenamiento entrenamiento = null;
     EditText caja_texto;
     BaseDatos bd = new BaseDatos(this);
+    Boolean editar = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +34,29 @@ public class SiguienteNuevoEntrenamiento extends AppCompatActivity {
 
         if(objetoRecibido!=null){
             entrenamiento=(Entrenamiento) objetoRecibido.getSerializable("entrenamiento");
+            editar = (Boolean) objetoRecibido.getSerializable("editar");
             numero_series = entrenamiento.getNumeroSeries();
-            entrenamiento.inicializarEjercicios();
+            if(!editar){
+                entrenamiento.inicializarEjercicios();
+            }
             generaScroll();
         }
     }
 
+    public void volverAtras(View view){
+        finish();
+    }
+
+    public void volverInicio(View view){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
     public void finalizarGuardadoEntrenamiento(View view){
-        bd.guardarEntrenamiento(entrenamiento);
+        if(!editar)
+            bd.guardarEntrenamiento(entrenamiento);
+        else
+            bd.editarEjerciciosEntrenamiento(entrenamiento);
         Intent intent = new Intent(this, MainActivity.class);
         Bundle bundle=new Bundle();
         bundle.putSerializable("entrenamiento", entrenamiento);
@@ -62,8 +78,8 @@ public class SiguienteNuevoEntrenamiento extends AppCompatActivity {
         dialogo.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                System.out.println("BOTON: " + copiaIndice + "TEXTO: " + caja_texto.getText().toString());
                 entrenamiento.setEjercicio(copiaIndice, caja_texto.getText().toString());
+                bd.editarEjerciciosEntrenamiento(entrenamiento);
                 setTextoBotones();
             }
         });
@@ -107,9 +123,11 @@ public class SiguienteNuevoEntrenamiento extends AppCompatActivity {
                     1 //Weight
             );
             Button boton_nombre_ejercicio = new Button(this);
-            int id = View.generateViewId();
-            entrenamiento.addIDEjercicio(id);
-            boton_nombre_ejercicio.setId(id);
+            //int id = View.generateViewId();ç
+            int id;
+            boton_nombre_ejercicio.setId(entrenamiento.getIDEjercicio(i));
+            //if(editar)
+                //bd.editarEjerciciosEntrenamiento(entrenamiento);
             boton_nombre_ejercicio.setText(entrenamiento.getEjercicio(indice));
             int[] attrs2 = new int[] { android.R.attr.selectableItemBackground};
             TypedArray ta2 = obtainStyledAttributes(attrs2);

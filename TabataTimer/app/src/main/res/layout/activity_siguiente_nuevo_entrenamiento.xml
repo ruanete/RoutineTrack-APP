@@ -19,7 +19,7 @@
             android:layout_marginTop="0dp"
             app:cardBackgroundColor="@color/colorPrincipal"
             app:contentPaddingBottom="10dp"
-            app:contentPaddingTop="40dp">
+            app:contentPaddingTop="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -78,6 +78,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.25"
                     android:background="?android:selectableItemBackground"
+                    android:onClick="volverAtras"
                     app:srcCompat="@drawable/icono_paso_atras" />
 
                 <ImageButton
@@ -87,6 +88,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:background="?android:selectableItemBackground"
+                    android:onClick="volverInicio"
                     app:srcCompat="@drawable/icono_home" />
 
                 <ImageButton

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.tabatatimer.Datos.BaseDatos;
 import com.example.tabatatimer.Datos.Entrenamiento;
 
 public class NuevoEntrenamiento extends AppCompatActivity {
@@ -23,33 +24,52 @@ public class NuevoEntrenamiento extends AppCompatActivity {
     Button boton_descanso_tabata;
     EditText caja_texto;
     Entrenamiento entrenamiento;
+    BaseDatos bd = new BaseDatos(this);
+    Boolean editar = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nuevo_entrenamiento);
-        setBotones();
-        entrenamiento = new Entrenamiento();
-        setTextoBotones();
+
+        Bundle objetoRecibido = getIntent().getExtras();
+
+        if(objetoRecibido!=null){
+            entrenamiento=(Entrenamiento) objetoRecibido.getSerializable("entrenamiento");
+            editar = (Boolean) objetoRecibido.getSerializable("editar");
+            setBotones();
+            setTextoBotones();
+        }else{
+            editar=false;
+            entrenamiento = new Entrenamiento();
+            setBotones();
+            setTextoBotones();
+        }
     }
 
     public void abrirSiguienteNuevoEntrenamiento(View view){
         Intent intent = new Intent(this, SiguienteNuevoEntrenamiento.class);
         Bundle bundle=new Bundle();
         bundle.putSerializable("entrenamiento", entrenamiento);
+        if(editar)
+            bundle.putSerializable("editar", true);
+        else
+            bundle.putSerializable("editar", false);
         intent.putExtras(bundle);
 
         startActivity(intent);
     }
 
     public void volverAtras(View view){
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(this, MainActivity.class);
+        //startActivity(intent);
+        finish();
     }
 
     public void volverInicio(View view){
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(this, MainActivity.class);
+        //startActivity(intent);
+        finish();
     }
 
     public void setTextoBotones(){
@@ -88,6 +108,8 @@ public class NuevoEntrenamiento extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 entrenamiento.setNombre(caja_texto.getText().toString());
+                if(editar)
+                    bd.editarEntrenamiento(entrenamiento);
                 setTextoBotones();
             }
         });
@@ -116,6 +138,8 @@ public class NuevoEntrenamiento extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 entrenamiento.setTiempoPreparacion(Integer.parseInt(caja_texto.getText().toString()));
+                if(editar)
+                    bd.editarEntrenamiento(entrenamiento);
                 setTextoBotones();
             }
         });
@@ -144,6 +168,8 @@ public class NuevoEntrenamiento extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 entrenamiento.setTiempoEjercicio(Integer.parseInt(caja_texto.getText().toString()));
+                if(editar)
+                    bd.editarEntrenamiento(entrenamiento);
                 setTextoBotones();
             }
         });
@@ -172,6 +198,8 @@ public class NuevoEntrenamiento extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 entrenamiento.setTiempoDescanso(Integer.parseInt(caja_texto.getText().toString()));
+                if(editar)
+                    bd.editarEntrenamiento(entrenamiento);
                 setTextoBotones();
             }
         });
@@ -200,6 +228,13 @@ public class NuevoEntrenamiento extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 entrenamiento.setNumeroSeries(Integer.parseInt(caja_texto.getText().toString()));
+                entrenamiento.inicializarEjercicios();
+
+                if(editar){
+                    bd.editarEntrenamiento(entrenamiento);
+                    bd.guardarEjercicios(entrenamiento);
+                }
+
                 setTextoBotones();
             }
         });
@@ -228,6 +263,8 @@ public class NuevoEntrenamiento extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 entrenamiento.setNumeroTabatas(Integer.parseInt(caja_texto.getText().toString()));
+                if(editar)
+                    bd.editarEntrenamiento(entrenamiento);
                 setTextoBotones();
             }
         });
@@ -256,6 +293,8 @@ public class NuevoEntrenamiento extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 entrenamiento.setDescansoTabata(Integer.parseInt(caja_texto.getText().toString()));
+                if(editar)
+                    bd.editarEntrenamiento(entrenamiento);
                 setTextoBotones();
             }
         });

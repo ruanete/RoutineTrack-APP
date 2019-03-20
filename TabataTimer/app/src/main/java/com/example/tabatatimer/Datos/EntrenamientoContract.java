@@ -20,7 +20,8 @@ public class EntrenamientoContract {
     public static abstract class ColumnasEjercicios implements BaseColumns{
         public static final String TABLE_NAME = "ejercicios";
 
-        public static final String ID = "id";
+        public static final String ID_ENTRENAMIENTO = "id_entrenamiento";
+        public static final String ID_EJERCICIO = "id_ejercicio";
         public static final String NOMBRE_EJERCICIO = "nombre_ejercicio";
     }
 }
