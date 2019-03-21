@@ -33,8 +33,9 @@ public class Entrenamiento implements Serializable {
         descansoTabata = 0;
         tiempoTotal = 0;
         ejercicios = new Vector<>();
-        //ejercicios.add("Nombre del ejercicio 1");
+        ejercicios.add("Nombre del ejercicio 1");
         IDEjercicios = new Vector<>();
+        IDEjercicios.add(View.generateViewId());
     }
 
     public Entrenamiento(int IDentrenamiento, String nombre, int tiempoPreparacion, int tiempoEjercicio, int tiempoDescanso, int numeroSeries, int numeroTabatas, int descansoTabata, int tiempoTotal, Vector<String> ejercicios, Vector<Integer> IDEjercicios){
@@ -172,9 +173,10 @@ public class Entrenamiento implements Serializable {
 
     public Vector<ContentValues> toContentValuesEjercicios() {
         Vector<ContentValues> values = new Vector<>();
-        ContentValues value = new ContentValues();
         //values.put(ColumnasEjercicios.ID_ENTRENAMIENTO, IDentrenamiento);
         for (int i = 0; i < numeroSeries; i++) {
+            ContentValues value = new ContentValues();
+            System.out.println("ID EXERCISE: " + IDEjercicios.get(i));
             value.put(ColumnasEjercicios.ID_ENTRENAMIENTO, IDentrenamiento);
             value.put(ColumnasEjercicios.ID_EJERCICIO, IDEjercicios.get(i));
             value.put(ColumnasEjercicios.NOMBRE_EJERCICIO, ejercicios.get(i));

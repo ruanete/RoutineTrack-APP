@@ -61,15 +61,15 @@ public class NuevoEntrenamiento extends AppCompatActivity {
     }
 
     public void volverAtras(View view){
-        //Intent intent = new Intent(this, MainActivity.class);
-        //startActivity(intent);
-        finish();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        //finish();
     }
 
     public void volverInicio(View view){
-        //Intent intent = new Intent(this, MainActivity.class);
-        //startActivity(intent);
-        finish();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        //finish();
     }
 
     public void setTextoBotones(){
@@ -107,6 +107,8 @@ public class NuevoEntrenamiento extends AppCompatActivity {
         dialogo.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                System.out.println("EDITAR NOMBRE ENTRENAMIENTO" + editar);
+
                 entrenamiento.setNombre(caja_texto.getText().toString());
                 if(editar)
                     bd.editarEntrenamiento(entrenamiento);
@@ -231,6 +233,7 @@ public class NuevoEntrenamiento extends AppCompatActivity {
                 entrenamiento.inicializarEjercicios();
 
                 if(editar){
+                    bd.eliminarEjercicios(entrenamiento);
                     bd.editarEntrenamiento(entrenamiento);
                     bd.guardarEjercicios(entrenamiento);
                 }

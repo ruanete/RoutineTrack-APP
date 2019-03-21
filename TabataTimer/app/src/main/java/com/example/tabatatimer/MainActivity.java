@@ -3,9 +3,6 @@ package com.example.tabatatimer;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.TypedArray;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -28,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     BaseDatos bd = new BaseDatos(this);
     Vector<Entrenamiento> entrenamientosGuardados;
     Entrenamiento entrenamientoEditar = null;
+    Entrenamiento entrenamientoIniciar = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +52,17 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void abrirIniciarEntrenamiento(View view){
+        Intent intent = new Intent(this, CronometroEntrenamiento.class);
+        Bundle bundle=new Bundle();
+        bundle.putSerializable("entrenamiento", entrenamientoIniciar);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
     public void generaScroll(){
         for(int i=0;i<entrenamientosGuardados.size();i++) {
+            final int indice = i;
             LinearLayout entrenamientos = findViewById(R.id.layout_entrenamientos);
 
             RelativeLayout entrenamientoLayout = new RelativeLayout(this);
@@ -87,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             imagenPesaParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             imagenPesaParams.addRule(RelativeLayout.CENTER_VERTICAL);
             ImageView pesa = new ImageView(this);
-            pesa.setImageResource(R.drawable.ic_fitness_center_24px);
+            pesa.setImageResource(R.drawable.icono_pesa);
             int id = View.generateViewId();
             pesa.setId(id);
             int[] attrs = new int[]{android.R.attr.selectableItemBackground};
@@ -107,6 +114,13 @@ public class MainActivity extends AppCompatActivity {
             play.setClickable(true);
             play.setBackground(drawableFromTheme);
             play.setLayoutParams(botonIniciarEntrenamientoParams);
+            play.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    entrenamientoIniciar = entrenamientosGuardados.get(indice);
+                    abrirIniciarEntrenamiento(v);
+                }
+            });
 
             //Boton central para editar entrenamiento
             botonCentralParams.addRule(RelativeLayout.START_OF, play.getId());
@@ -127,11 +141,13 @@ public class MainActivity extends AppCompatActivity {
 
             boton.setLayoutParams(botonCentralParams);
 
-            final int indice = i;
             boton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     entrenamientoEditar = entrenamientosGuardados.get(indice);
+                    System.out.println("EN MAIN ACTIVITY::::::::::::::::::::::");
+                    for(int i = 0;i < entrenamientoEditar.getNumeroSeries();i++)
+                        System.out.println("\nID: " + entrenamientoEditar.getIDEjercicio(i) + "\nEJERCICIO: " + entrenamientoEditar.getEjercicio(i));
                     abrirEditarEntrenamiento(v);
                 }
             });

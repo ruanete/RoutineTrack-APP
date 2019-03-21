@@ -12,6 +12,8 @@ import com.example.tabatatimer.Datos.EntrenamientoContract.ColumnasEjercicios;
 
 import java.util.Vector;
 
+import static com.example.tabatatimer.Datos.EntrenamientoContract.ColumnasEjercicios.NOMBRE_EJERCICIO;
+
 public class BaseDatos extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "RoutineTracker.db";
@@ -42,7 +44,7 @@ public class BaseDatos extends SQLiteOpenHelper {
                 + ColumnasEjercicios._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + ColumnasEjercicios.ID_ENTRENAMIENTO + " INTEGER NOT NULL REFERENCES " + ColumnasEntrenamiento.TABLE_NAME + "(" + ColumnasEntrenamiento.ID + "),"
                 + ColumnasEjercicios.ID_EJERCICIO + " INTEGER NOT NULL,"
-                + ColumnasEjercicios.NOMBRE_EJERCICIO + " TEXT NOT NULL)"
+                + NOMBRE_EJERCICIO + " TEXT NOT NULL)"
         );
 
     }
@@ -79,7 +81,7 @@ public class BaseDatos extends SQLiteOpenHelper {
         for(int i=0;i<entrenamiento.getNumeroSeries();i++){
             ejercicio.put(ColumnasEjercicios.ID_ENTRENAMIENTO,entrenamiento.getIDentrenamiento());
             ejercicio.put(ColumnasEjercicios.ID_EJERCICIO,entrenamiento.getIDEjercicio(i));
-            ejercicio.put(ColumnasEjercicios.NOMBRE_EJERCICIO,entrenamiento.getEjercicio(i));
+            ejercicio.put(NOMBRE_EJERCICIO,entrenamiento.getEjercicio(i));
             bd.insert(ColumnasEjercicios.TABLE_NAME,
                     null,
                     ejercicio);
@@ -139,9 +141,16 @@ public class BaseDatos extends SQLiteOpenHelper {
         values = entrenamiento.toContentValuesEjercicios();
 
         for (int i = 0; i < values.size(); i++) {
-            bd.update(ColumnasEjercicios.TABLE_NAME, values.get(i), "id_entrenamiento = ?", new String[]{String.valueOf(entrenamiento.getIDentrenamiento())});
+            System.out.println("\nCONTENT VALUE ID:" + values.get(i).getAsString("id_entrenamiento") + "\nCONTENT VALUE IDEJERICICO:" + values.get(i).getAsString("id_ejercicio"));
+            bd.update(ColumnasEjercicios.TABLE_NAME, values.get(i), "id_entrenamiento = ? and id_ejercicio=?", new String[]{String.valueOf(values.get(i).getAsString("id_entrenamiento")),
+                                                                                                                                        String.valueOf(values.get(i).getAsString("id_ejercicio"))});
         }
 
         bd.close();
+    }
+
+    public void eliminarEjercicios(Entrenamiento entrenamiento){
+        SQLiteDatabase bd = this.getWritableDatabase();
+        bd.delete(ColumnasEjercicios.TABLE_NAME, "id_entrenamiento=" + entrenamiento.getIDentrenamiento(), null);
     }
 }
