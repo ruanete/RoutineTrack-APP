@@ -107,8 +107,6 @@ public class NuevoEntrenamiento extends AppCompatActivity {
         dialogo.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                System.out.println("EDITAR NOMBRE ENTRENAMIENTO" + editar);
-
                 entrenamiento.setNombre(caja_texto.getText().toString());
                 if(editar)
                     bd.editarEntrenamiento(entrenamiento);

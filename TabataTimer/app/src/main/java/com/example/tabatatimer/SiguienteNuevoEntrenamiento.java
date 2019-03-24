@@ -34,14 +34,8 @@ public class SiguienteNuevoEntrenamiento extends AppCompatActivity {
 
         if(objetoRecibido!=null){
             entrenamiento=(Entrenamiento) objetoRecibido.getSerializable("entrenamiento");
-            System.out.println("EN SIGUIENTE ENTRENAMIENTO::::::::::::::::::::::");
-            for(int i = 0;i < entrenamiento.getNumeroSeries();i++)
-                System.out.println("\nID: " + entrenamiento.getIDEjercicio(i) + "\nEJERCICIO: " + entrenamiento.getEjercicio(i));
             editar = (Boolean) objetoRecibido.getSerializable("editar");
             numero_series = entrenamiento.getNumeroSeries();
-            /*if(!editar){
-                entrenamiento.inicializarEjercicios();
-            }*/
             generaScroll();
         }
     }
@@ -81,15 +75,9 @@ public class SiguienteNuevoEntrenamiento extends AppCompatActivity {
         dialogo.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                System.out.println("ANTES DE GUARDAR::::::::::::::::::::::");
-                for(int i = 0;i < entrenamiento.getNumeroSeries();i++)
-                    System.out.println("\nID: " + entrenamiento.getIDEjercicio(i) + "\nEJERCICIO: " + entrenamiento.getEjercicio(i));
                 entrenamiento.setEjercicio(copiaIndice, caja_texto.getText().toString());
                 bd.editarEjerciciosEntrenamiento(entrenamiento);
                 setTextoBotones();
-                System.out.println("DESPUES DE GUARDAR::::::::::::::::::::::");
-                for(int i = 0;i < entrenamiento.getNumeroSeries();i++)
-                    System.out.println("\nID: " + entrenamiento.getIDEjercicio(i) + "\nEJERCICIO: " + entrenamiento.getEjercicio(i));
             }
         });
 

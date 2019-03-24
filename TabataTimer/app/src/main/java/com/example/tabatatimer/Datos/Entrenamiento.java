@@ -171,6 +171,10 @@ public class Entrenamiento implements Serializable {
         return ejercicios.get(pos);
     }
 
+    public Vector<String> getEjercicios(){
+        return ejercicios;
+    }
+
     public Vector<ContentValues> toContentValuesEjercicios() {
         Vector<ContentValues> values = new Vector<>();
         //values.put(ColumnasEjercicios.ID_ENTRENAMIENTO, IDentrenamiento);
@@ -206,11 +210,36 @@ public class Entrenamiento implements Serializable {
         int segundos = tiempoTotal-(horas*3600+minutos*60);
 
         if(horas==0 && minutos==0 && segundos>=0){
-            tiempoFinal = Integer.toString(segundos);
+            if(segundos/10==0)
+                tiempoFinal = "0" + Long.toString(segundos);
+            else
+                tiempoFinal = Long.toString(segundos);
         }else if(horas==0 && minutos>0 && segundos >=0){
-            tiempoFinal = Integer.toString(minutos) + ":" + Integer.toString(segundos);
+            if(segundos/10==0 && minutos/10==0)
+                tiempoFinal = "0" + Long.toString(minutos) + ":" + "0" + Long.toString(segundos);
+            else if(segundos/10==0 && minutos/10!=0)
+                tiempoFinal = Long.toString(minutos) + ":" + "0" + Long.toString(segundos);
+            else if(segundos/10!=0 && minutos/10==0)
+                tiempoFinal = "0" + Long.toString(minutos) + ":" + Long.toString(segundos);
+            else
+                tiempoFinal = Long.toString(minutos) + ":" + Long.toString(segundos);
         }else{
-            tiempoFinal = Integer.toString(horas) + ":" + Integer.toString(minutos) + ":" + Integer.toString(segundos);
+            if(horas/10==0 && segundos/10==0 && minutos/10==0)
+                tiempoFinal = "0" + Long.toString(horas) + ":" + "0" + Long.toString(minutos) + ":" + "0" + Long.toString(segundos);
+            else if(horas/10!=0 && segundos/10==0 && minutos/10==0)
+                tiempoFinal = Long.toString(horas) + ":" + "0" + Long.toString(minutos) + ":" + "0" + Long.toString(segundos);
+            else if(horas/10==0 && segundos/10!=0 && minutos/10==0)
+                tiempoFinal = "0" + Long.toString(horas) + ":" + "0" + Long.toString(minutos) + ":" + Long.toString(segundos);
+            else if(horas/10==0 && segundos/10==0 && minutos/10!=0)
+                tiempoFinal = "0" + Long.toString(horas) + ":" + Long.toString(minutos) + ":" + "0" + Long.toString(segundos);
+            else if(horas/10!=0 && segundos/10!=0 && minutos/10==0)
+                tiempoFinal = Long.toString(horas) + ":" + "0" + Long.toString(minutos) + ":" + Long.toString(segundos);
+            else if(horas/10==0 && segundos/10!=0 && minutos/10!=0)
+                tiempoFinal = "0" + Long.toString(horas) + ":" + Long.toString(minutos) + ":" + Long.toString(segundos);
+            else if(horas/10!=0 && segundos/10==0 && minutos/10!=0)
+                tiempoFinal = Long.toString(horas) + ":" + Long.toString(minutos) + ":" + "0" +  Long.toString(segundos);
+            else
+                tiempoFinal = Long.toString(horas) + ":" + Long.toString(minutos) + ":" + Long.toString(segundos);
         }
 
         return tiempoFinal;

@@ -145,9 +145,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     entrenamientoEditar = entrenamientosGuardados.get(indice);
-                    System.out.println("EN MAIN ACTIVITY::::::::::::::::::::::");
-                    for(int i = 0;i < entrenamientoEditar.getNumeroSeries();i++)
-                        System.out.println("\nID: " + entrenamientoEditar.getIDEjercicio(i) + "\nEJERCICIO: " + entrenamientoEditar.getEjercicio(i));
                     abrirEditarEntrenamiento(v);
                 }
             });
