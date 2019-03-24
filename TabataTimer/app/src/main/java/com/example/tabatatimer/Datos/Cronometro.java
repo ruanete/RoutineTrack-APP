@@ -5,14 +5,21 @@ import android.os.CountDownTimer;
 import com.example.tabatatimer.CronometroEntrenamiento;
 
 public class Cronometro {
+    private CountDownTimer cronometroTotal;
     private CountDownTimer cronometro;
     private Entrenamiento entrenamiento;
     private long tiempoRestante;
+
     private int serieActual;
     private int posEjActual;
     private int posEjSiguiente;
     private int contadorEjercicio=0;
     private int contadorDescanso=0;
+
+    private Boolean preparacionRealizado=false;
+    private Boolean ejercicioRealizado=false;
+    private Boolean descansoSerieRealizado=false;
+    private Boolean descansoTabataRealizado=false;
 
     public Cronometro(){
         tiempoRestante = 0;
@@ -32,18 +39,22 @@ public class Cronometro {
             CronometroEntrenamiento.setEjercicioActual("Preparación");
             CronometroEntrenamiento.setEjercicioSiguiente(entrenamiento.getEjercicio(0));
             CronometroEntrenamiento.setBackgroundTiempoCronometro(0);
+            CronometroEntrenamiento.setTiempoCronometro(getTiempoTotalString(entrenamiento.getTiempoPreparacion()));
         }else{
             CronometroEntrenamiento.setEjercicioActual(entrenamiento.getEjercicio(0));
             CronometroEntrenamiento.setEjercicioSiguiente(entrenamiento.getEjercicio(1));
+            CronometroEntrenamiento.setTiempoCronometro(getTiempoTotalString(entrenamiento.getTiempoEjercicio()));
         }
 
         CronometroEntrenamiento.setSerieActual("1");
-        CronometroEntrenamiento.setTiempoCronometro(Long.toString(tiempoRestante));
+        CronometroEntrenamiento.setTabataActual("1");
+        CronometroEntrenamiento.setTiempoTotal(getTiempoTotalString(tiempoRestante));
 
-        cronometro = new CountDownTimer(entrenamiento.getTiempoTotal()*1000, 1000) {
+        cronometroTotal = new CountDownTimer(entrenamiento.getTiempoTotal()*1000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 tiempoRestante = millisUntilFinished / 1000;
+                CronometroEntrenamiento.setTiempoTotal(getTiempoTotalString(tiempoRestante));
                 procedimientoCronometro();
             }
 
@@ -54,6 +65,183 @@ public class Cronometro {
     }
 
     private void procedimientoCronometro(){
+        if(entrenamiento.getTiempoPreparacion()>0 && !preparacionRealizado){
+            CronometroEntrenamiento.setBackgroundTiempoCronometro(0);
+            preparacionRealizado=true;
+            ejercicioRealizado=true;
+            descansoSerieRealizado=true;
+            descansoTabataRealizado=true;
+            cronometro = new CountDownTimer((entrenamiento.getTiempoPreparacion()+1)*1000, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+                    CronometroEntrenamiento.setTiempoCronometro(Long.toString(millisUntilFinished / 1000));
+                    if(millisUntilFinished / 1000==1)
+                        onFinish();
+                }
+
+                public void onFinish() {
+                    preparacionRealizado=true;
+                    ejercicioRealizado=false;
+                    descansoSerieRealizado=true;
+                    descansoTabataRealizado=true;
+                    cronometro.cancel();
+                }
+            }.start();
+        }else if(entrenamiento.getTiempoEjercicio()>0 && !ejercicioRealizado){
+            CronometroEntrenamiento.setBackgroundTiempoCronometro(1);
+            preparacionRealizado=true;
+            ejercicioRealizado=true;
+            descansoSerieRealizado=true;
+            descansoTabataRealizado=true;
+            cronometro = new CountDownTimer((entrenamiento.getTiempoEjercicio()+1)*1000, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+                    CronometroEntrenamiento.setTiempoCronometro(Long.toString(millisUntilFinished / 1000));
+                    if(millisUntilFinished / 1000==1)
+                        onFinish();
+                }
+
+                public void onFinish() {
+                    if(entrenamiento.getTiempoDescanso()>0 && tiempoRestante!=0){
+                        preparacionRealizado=true;
+                        ejercicioRealizado=true;
+                        descansoSerieRealizado=false;
+                        descansoTabataRealizado=true;
+                    }else if(entrenamiento.getTiempoDescanso()<0 && tiempoRestante!=0){
+                        preparacionRealizado=true;
+                        ejercicioRealizado=false;
+                        descansoSerieRealizado=true;
+                        descansoTabataRealizado=true;
+                    }else{
+                        preparacionRealizado=true;
+                        ejercicioRealizado=true;
+                        descansoSerieRealizado=true;
+                        descansoTabataRealizado=true;
+                    }
+
+                    cronometro.cancel();
+                }
+            }.start();
+        }else if(entrenamiento.getTiempoDescanso()>0 && !descansoSerieRealizado){
+            CronometroEntrenamiento.setBackgroundTiempoCronometro(2);
+            preparacionRealizado=true;
+            ejercicioRealizado=true;
+            descansoSerieRealizado=true;
+            descansoTabataRealizado=true;
+            cronometro = new CountDownTimer((entrenamiento.getTiempoDescanso()+1)*1000, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+                    CronometroEntrenamiento.setTiempoCronometro(Long.toString(millisUntilFinished / 1000));
+                    if(millisUntilFinished / 1000==1)
+                        onFinish();
+                }
+
+                public void onFinish() {
+                    System.out.println("\nDESCANSO TABATA: " + entrenamiento.getDescansoTabata());
+                    if(entrenamiento.getDescansoTabata()>0 && tiempoRestante!=0){
+                        preparacionRealizado=true;
+                        ejercicioRealizado=true;
+                        descansoSerieRealizado=true;
+                        descansoTabataRealizado=false;
+                    }else if(entrenamiento.getDescansoTabata()<0 && tiempoRestante!=0){
+                        preparacionRealizado=true;
+                        ejercicioRealizado=false;
+                        descansoSerieRealizado=true;
+                        descansoTabataRealizado=true;
+                    }else{
+                        preparacionRealizado=true;
+                        ejercicioRealizado=true;
+                        descansoSerieRealizado=true;
+                        descansoTabataRealizado=true;
+                    }
+
+                    cronometro.cancel();
+                }
+            }.start();
+        }else if(entrenamiento.getDescansoTabata()>0 && !descansoTabataRealizado){
+            CronometroEntrenamiento.setBackgroundTiempoCronometro(3);
+            preparacionRealizado=true;
+            ejercicioRealizado=true;
+            descansoSerieRealizado=true;
+            descansoTabataRealizado=true;
+            cronometro = new CountDownTimer((entrenamiento.getDescansoTabata()+1)*1000, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+                    CronometroEntrenamiento.setTiempoCronometro(Long.toString(millisUntilFinished / 1000));
+                    if(millisUntilFinished / 1000==1)
+                        onFinish();
+                }
+
+                public void onFinish() {
+                    preparacionRealizado=true;
+                    ejercicioRealizado=false;
+                    descansoSerieRealizado=true;
+                    descansoTabataRealizado=true;
+                    cronometro.cancel();
+                }
+            }.start();
+        }
+    }
+
+    public void iniciarCronometro(){
+        cronometroTotal.start();
+        //cronometro.start();
+    }
+
+    public void finalizarCronometro(){
+        cronometroTotal.cancel();
+        cronometro.cancel();
+    }
+
+    public void siguienteSerie(){
+        serieActual++;
+        posEjActual++;
+        posEjActual%=entrenamiento.getNumeroSeries();
+        posEjSiguiente++;
+        posEjSiguiente%=entrenamiento.getNumeroSeries();
+    }
+
+    public String getTiempoTotalString(long tiempo){
+        String tiempoFinal="";
+        long horas = (tiempo / 3600);
+        long minutos = ((tiempo-horas*3600)/60);
+        long segundos = tiempo-(horas*3600+minutos*60);
+
+        if(horas==0 && minutos==0 && segundos>=0){
+            tiempoFinal = Long.toString(segundos);
+        }else if(horas==0 && minutos>0 && segundos >=0){
+            if(segundos/10==0 && minutos/10==0)
+                tiempoFinal = "0" + Long.toString(minutos) + ":" + "0" + Long.toString(segundos);
+            else if(segundos/10==0 && minutos/10!=0)
+                tiempoFinal = Long.toString(minutos) + ":" + "0" + Long.toString(segundos);
+            else if(segundos/10!=0 && minutos/10==0)
+                tiempoFinal = "0" + Long.toString(minutos) + ":" + Long.toString(segundos);
+            else
+                tiempoFinal = Long.toString(minutos) + ":" + Long.toString(segundos);
+        }else{
+            if(horas/10==0 && segundos/10==0 && minutos/10==0)
+                tiempoFinal = "0" + Long.toString(horas) + ":" + "0" + Long.toString(minutos) + ":" + "0" + Long.toString(segundos);
+            else if(horas/10!=0 && segundos/10==0 && minutos/10==0)
+                tiempoFinal = Long.toString(horas) + ":" + "0" + Long.toString(minutos) + ":" + "0" + Long.toString(segundos);
+            else if(horas/10==0 && segundos/10!=0 && minutos/10==0)
+                tiempoFinal = "0" + Long.toString(horas) + ":" + "0" + Long.toString(minutos) + ":" + Long.toString(segundos);
+            else if(horas/10==0 && segundos/10==0 && minutos/10!=0)
+                tiempoFinal = "0" + Long.toString(horas) + ":" + Long.toString(minutos) + ":" + "0" + Long.toString(segundos);
+            else if(horas/10!=0 && segundos/10!=0 && minutos/10==0)
+                tiempoFinal = Long.toString(horas) + ":" + "0" + Long.toString(minutos) + ":" + Long.toString(segundos);
+            else if(horas/10==0 && segundos/10!=0 && minutos/10!=0)
+                tiempoFinal = "0" + Long.toString(horas) + ":" + Long.toString(minutos) + ":" + Long.toString(segundos);
+            else if(horas/10!=0 && segundos/10==0 && minutos/10!=0)
+                tiempoFinal = Long.toString(horas) + ":" + Long.toString(minutos) + ":" + "0" +  Long.toString(segundos);
+            else
+                tiempoFinal = Long.toString(horas) + ":" + Long.toString(minutos) + ":" + Long.toString(segundos);
+        }
+
+        return tiempoFinal;
+    }
+}
+
+    /*private void procedimientoCronometro(){
         int inferior_ejercicio = entrenamiento.getTiempoDescanso()+(entrenamiento.getTiempoTotal()-entrenamiento.getTiempoPreparacion()-serieActual*entrenamiento.getTiempoEjercicio())-serieActual*entrenamiento.getTiempoDescanso();
         long superior_ejercicio = entrenamiento.getTiempoEjercicio() + entrenamiento.getTiempoDescanso()+(entrenamiento.getTiempoTotal()-entrenamiento.getTiempoPreparacion()-serieActual*entrenamiento.getTiempoEjercicio())-serieActual*entrenamiento.getTiempoDescanso();
         int inferior_descanso = (entrenamiento.getTiempoTotal()-entrenamiento.getTiempoPreparacion()-serieActual*entrenamiento.getTiempoEjercicio())-serieActual*entrenamiento.getTiempoDescanso();
@@ -110,69 +298,5 @@ public class Cronometro {
 
         }
 
-        CronometroEntrenamiento.setTiempoCronometro(getTiempoTotalString());
-    }
-
-    public void iniciarCronometro(){
-        cronometro.start();
-    }
-
-    public void finalizarCronometro(){
-        cronometro.cancel();
-    }
-
-    public void siguienteSerie(){
-        //System.out.println("\nSERIE ANTERIOR: " + serieActual);
-        serieActual++;
-        //serieActual%=entrenamiento.getNumeroSeries();
-        //if(serieActual==0)
-            //serieActual=1;
-        //System.out.println("\nSERIE SIGUIENTE: " + serieActual);
-        posEjActual++;
-        posEjActual%=entrenamiento.getNumeroSeries();
-        posEjSiguiente++;
-        posEjSiguiente%=entrenamiento.getNumeroSeries();
-    }
-
-    public String getTiempoTotalString(){
-        String tiempoFinal="";
-        long horas = (tiempoRestante / 3600);
-        long minutos = ((tiempoRestante-horas*3600)/60);
-        long segundos = tiempoRestante-(horas*3600+minutos*60);
-
-        if(horas==0 && minutos==0 && segundos>=0){
-            if(segundos/10==0)
-                tiempoFinal = "0" + Long.toString(segundos);
-            else
-                tiempoFinal = Long.toString(segundos);
-        }else if(horas==0 && minutos>0 && segundos >=0){
-            if(segundos/10==0 && minutos/10==0)
-                tiempoFinal = "0" + Long.toString(minutos) + ":" + "0" + Long.toString(segundos);
-            else if(segundos/10==0 && minutos/10!=0)
-                tiempoFinal = Long.toString(minutos) + ":" + "0" + Long.toString(segundos);
-            else if(segundos/10!=0 && minutos/10==0)
-                tiempoFinal = "0" + Long.toString(minutos) + ":" + Long.toString(segundos);
-            else
-                tiempoFinal = Long.toString(minutos) + ":" + Long.toString(segundos);
-        }else{
-            if(horas/10==0 && segundos/10==0 && minutos/10==0)
-                tiempoFinal = "0" + Long.toString(horas) + ":" + "0" + Long.toString(minutos) + ":" + "0" + Long.toString(segundos);
-            else if(horas/10!=0 && segundos/10==0 && minutos/10==0)
-                tiempoFinal = Long.toString(horas) + ":" + "0" + Long.toString(minutos) + ":" + "0" + Long.toString(segundos);
-            else if(horas/10==0 && segundos/10!=0 && minutos/10==0)
-                tiempoFinal = "0" + Long.toString(horas) + ":" + "0" + Long.toString(minutos) + ":" + Long.toString(segundos);
-            else if(horas/10==0 && segundos/10==0 && minutos/10!=0)
-                tiempoFinal = "0" + Long.toString(horas) + ":" + Long.toString(minutos) + ":" + "0" + Long.toString(segundos);
-            else if(horas/10!=0 && segundos/10!=0 && minutos/10==0)
-                tiempoFinal = Long.toString(horas) + ":" + "0" + Long.toString(minutos) + ":" + Long.toString(segundos);
-            else if(horas/10==0 && segundos/10!=0 && minutos/10!=0)
-                tiempoFinal = "0" + Long.toString(horas) + ":" + Long.toString(minutos) + ":" + Long.toString(segundos);
-            else if(horas/10!=0 && segundos/10==0 && minutos/10!=0)
-                tiempoFinal = Long.toString(horas) + ":" + Long.toString(minutos) + ":" + "0" +  Long.toString(segundos);
-            else
-                tiempoFinal = Long.toString(horas) + ":" + Long.toString(minutos) + ":" + Long.toString(segundos);
-        }
-
-        return tiempoFinal;
-    }
-}
+        CronometroEntrenamiento.setTiempoCronometro(getTiempoTotalString(tiempoRestante));
+    }*/
