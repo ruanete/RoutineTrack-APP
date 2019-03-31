@@ -26,14 +26,20 @@ public class MainActivity extends AppCompatActivity {
     Vector<Entrenamiento> entrenamientosGuardados;
     Entrenamiento entrenamientoEditar = null;
     Entrenamiento entrenamientoIniciar = null;
+    boolean eliminar = false;
+
+    LinearLayout layout_entrenamientos;
+    Button boton_eliminar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        layout_entrenamientos = findViewById(R.id.layout_entrenamientos);
+        boton_eliminar = findViewById(R.id.boton_eliminar);
 
         entrenamientosGuardados = bd.getEntrenamientos();
-        generaScroll();
+        generaScroll(false);
     }
 
     @SuppressLint("ResourceType")
@@ -65,7 +71,29 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void generaScroll(){
+    public void abrirBorrarEntrenamientos(View view){
+        generaScroll(true);
+        boton_eliminar.setText("TERMINAR");
+
+        boton_eliminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boton_eliminar.setText("BORRAR");
+                eliminar=false;
+                generaScroll(false);
+
+                boton_eliminar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        abrirBorrarEntrenamientos(v);
+                    }
+                });
+            }
+        });
+    }
+
+    public void generaScroll(final boolean eliminar){
+        layout_entrenamientos.removeAllViews();
         for(int i=0;i<entrenamientosGuardados.size();i++) {
             final int indice = i;
             LinearLayout entrenamientos = findViewById(R.id.layout_entrenamientos);
@@ -104,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             pesa.setId(id);
             int[] attrs = new int[]{android.R.attr.selectableItemBackground};
             TypedArray ta = obtainStyledAttributes(attrs);
-            Drawable drawableFromTheme = ta.getDrawable(0 /* index */);
+            final Drawable drawableFromTheme = ta.getDrawable(0 /* index */);
             ta.recycle();
 
             pesa.setLayoutParams(imagenPesaParams);
@@ -114,22 +142,32 @@ public class MainActivity extends AppCompatActivity {
             ImageButton play = new ImageButton(this);
             id = View.generateViewId();
             play.setId(id);
-            play.setImageResource(R.drawable.play);
+            if(eliminar)
+                play.setImageResource(R.drawable.icono_eliminar);
+            else
+                play.setImageResource(R.drawable.play);
             play.setBackgroundColor(Color.TRANSPARENT);
             play.setClickable(true);
             play.setBackground(drawableFromTheme);
             play.setLayoutParams(botonIniciarEntrenamientoParams);
+
             play.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     entrenamientoIniciar = entrenamientosGuardados.get(indice);
-                    abrirIniciarEntrenamiento(v);
+                    if(eliminar){
+                        bd.borrarEntrenamiento(entrenamientoIniciar);
+                        entrenamientosGuardados = bd.getEntrenamientos();
+                        generaScroll(true);
+                    }else
+                        abrirIniciarEntrenamiento(v);
                 }
             });
 
             //Boton central para editar entrenamiento
             botonCentralParams.addRule(RelativeLayout.START_OF, play.getId());
             botonCentralParams.addRule(RelativeLayout.END_OF, pesa.getId());
+            botonCentralParams.addRule(RelativeLayout.CENTER_VERTICAL);
             Button boton = new Button(this);
             id = View.generateViewId();
             boton.setId(id);

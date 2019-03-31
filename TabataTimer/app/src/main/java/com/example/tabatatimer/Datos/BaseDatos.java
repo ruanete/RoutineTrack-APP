@@ -217,4 +217,18 @@ public class BaseDatos extends SQLiteOpenHelper {
 
         return eventos;
     }
+
+    public void borrarEntrenamiento(Entrenamiento entrenamiento){
+        SQLiteDatabase bd = this.getWritableDatabase();
+
+        bd.delete(ColumnasEntrenamiento.TABLE_NAME,
+                ColumnasEntrenamiento.ID + "=?",
+                new String[]{Integer.toString(entrenamiento.getIDentrenamiento())});
+
+        bd.delete(ColumnasEjercicios.TABLE_NAME,
+                ColumnasEjercicios.ID_ENTRENAMIENTO + "=?",
+                new String[]{Integer.toString(entrenamiento.getIDentrenamiento())});
+
+        bd.close();
+    }
 }
