@@ -107,9 +107,14 @@ public class NuevoEntrenamiento extends AppCompatActivity {
         dialogo.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                entrenamiento.setNombre(caja_texto.getText().toString());
-                if(editar)
-                    bd.editarEntrenamiento(entrenamiento);
+                if(!caja_texto.getText().toString().isEmpty()){
+                    entrenamiento.setNombre(caja_texto.getText().toString());
+
+                    if(editar)
+                        bd.editarEntrenamiento(entrenamiento);
+                }
+
+
                 setTextoBotones();
             }
         });
@@ -137,9 +142,14 @@ public class NuevoEntrenamiento extends AppCompatActivity {
         dialogo.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                entrenamiento.setTiempoPreparacion(Integer.parseInt(caja_texto.getText().toString()));
-                if(editar)
-                    bd.editarEntrenamiento(entrenamiento);
+                if(!caja_texto.getText().toString().isEmpty()){
+                    entrenamiento.setTiempoPreparacion(Integer.parseInt(caja_texto.getText().toString()));
+
+                    if(editar)
+                        bd.editarEntrenamiento(entrenamiento);
+                }
+
+
                 setTextoBotones();
             }
         });
@@ -167,9 +177,14 @@ public class NuevoEntrenamiento extends AppCompatActivity {
         dialogo.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                entrenamiento.setTiempoEjercicio(Integer.parseInt(caja_texto.getText().toString()));
-                if(editar)
-                    bd.editarEntrenamiento(entrenamiento);
+                if(!caja_texto.getText().toString().isEmpty() && caja_texto.getText().toString().length()>0 && !caja_texto.getText().toString().equals("0")){
+                    entrenamiento.setTiempoEjercicio(Integer.parseInt(caja_texto.getText().toString()));
+
+                    if(editar)
+                        bd.editarEntrenamiento(entrenamiento);
+                }
+
+
                 setTextoBotones();
             }
         });
@@ -197,9 +212,14 @@ public class NuevoEntrenamiento extends AppCompatActivity {
         dialogo.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                entrenamiento.setTiempoDescanso(Integer.parseInt(caja_texto.getText().toString()));
-                if(editar)
-                    bd.editarEntrenamiento(entrenamiento);
+                if(!caja_texto.getText().toString().isEmpty()){
+                    entrenamiento.setTiempoDescanso(Integer.parseInt(caja_texto.getText().toString()));
+
+                    if(editar)
+                        bd.editarEntrenamiento(entrenamiento);
+                }
+
+
                 setTextoBotones();
             }
         });
@@ -227,14 +247,18 @@ public class NuevoEntrenamiento extends AppCompatActivity {
         dialogo.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                entrenamiento.setNumeroSeries(Integer.parseInt(caja_texto.getText().toString()));
-                entrenamiento.inicializarEjercicios();
+                if(!caja_texto.getText().toString().isEmpty() && caja_texto.getText().toString().length()>0 && !caja_texto.getText().toString().equals("0")){
+                    entrenamiento.setNumeroSeries(Integer.parseInt(caja_texto.getText().toString()));
+                    entrenamiento.inicializarEjercicios();
 
-                if(editar){
-                    bd.eliminarEjercicios(entrenamiento);
-                    bd.editarEntrenamiento(entrenamiento);
-                    bd.guardarEjercicios(entrenamiento);
+                    if(editar){
+                        bd.eliminarEjercicios(entrenamiento);
+                        bd.editarEntrenamiento(entrenamiento);
+                        bd.guardarEjercicios(entrenamiento);
+                    }
                 }
+
+
 
                 setTextoBotones();
             }
@@ -263,9 +287,14 @@ public class NuevoEntrenamiento extends AppCompatActivity {
         dialogo.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                entrenamiento.setNumeroTabatas(Integer.parseInt(caja_texto.getText().toString()));
-                if(editar)
-                    bd.editarEntrenamiento(entrenamiento);
+                if(!caja_texto.getText().toString().isEmpty() && caja_texto.getText().toString().length()>0 && !caja_texto.getText().toString().equals("0")){
+                    entrenamiento.setNumeroTabatas(Integer.parseInt(caja_texto.getText().toString()));
+
+                    if(editar)
+                        bd.editarEntrenamiento(entrenamiento);
+                }
+
+
                 setTextoBotones();
             }
         });
@@ -293,9 +322,12 @@ public class NuevoEntrenamiento extends AppCompatActivity {
         dialogo.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                entrenamiento.setDescansoTabata(Integer.parseInt(caja_texto.getText().toString()));
-                if(editar)
-                    bd.editarEntrenamiento(entrenamiento);
+                if(!caja_texto.getText().toString().isEmpty()){
+                    entrenamiento.setDescansoTabata(Integer.parseInt(caja_texto.getText().toString()));
+                    if(editar)
+                        bd.editarEntrenamiento(entrenamiento);
+                }
+
                 setTextoBotones();
             }
         });

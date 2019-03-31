@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.example.tabatatimer.Datos.BaseDatos;
 import com.example.tabatatimer.Datos.Evento;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Month;
@@ -40,6 +41,23 @@ public class CalendarioEntrenamientos extends AppCompatActivity {
         fecha = (TextView) findViewById(R.id.fecha);
         eventos_calendario = (LinearLayout) findViewById(R.id.eventos_calendario);
         bd = new BaseDatos(this);
+
+        Date fecha_actual = new Date();
+        generalScroll(fecha_actual);
+
+        SimpleDateFormat y = new SimpleDateFormat("y");
+        String year = y.format(fecha_actual);
+
+        SimpleDateFormat m = new SimpleDateFormat("MM");
+        String month = m.format(fecha_actual);
+
+        SimpleDateFormat d = new SimpleDateFormat("dd");
+        String day = d.format(fecha_actual);
+
+        anio.setText(year);
+
+        String resultantDate=getDateFormattedString("MM/dd/yyyy", month+1 + "/" + day + "/" + year, "EEEE, MMMM d");
+        fecha.setText(resultantDate);
 
         calendario.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override

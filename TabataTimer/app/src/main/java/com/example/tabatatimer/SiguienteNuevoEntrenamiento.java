@@ -75,8 +75,13 @@ public class SiguienteNuevoEntrenamiento extends AppCompatActivity {
         dialogo.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                entrenamiento.setEjercicio(copiaIndice, caja_texto.getText().toString());
-                bd.editarEjerciciosEntrenamiento(entrenamiento);
+                if(caja_texto.getText().toString().isEmpty()){
+                    entrenamiento.setEjercicio(copiaIndice, entrenamiento.getEjercicio(copiaIndice));
+                }else{
+                    entrenamiento.setEjercicio(copiaIndice, caja_texto.getText().toString());
+                    bd.editarEjerciciosEntrenamiento(entrenamiento);
+                }
+
                 setTextoBotones();
             }
         });

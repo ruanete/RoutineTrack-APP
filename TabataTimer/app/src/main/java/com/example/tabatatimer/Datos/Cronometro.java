@@ -40,20 +40,18 @@ public class Cronometro {
         tiempoRestante = entrenamiento.getTiempoTotal() - tiempoQueRestar;
         pasosEntrenamiento = new Vector<Vector<String>>();
         enProceso=false;
+        generarPasosEntrenamiento();
 
         if(entrenamiento.getTiempoPreparacion()>0){
-            CronometroEntrenamiento.setEjercicioActual("Preparación");
-            CronometroEntrenamiento.setEjercicioSiguiente(entrenamiento.getEjercicio(0));
             CronometroEntrenamiento.setBackgroundTiempoCronometro(0);
             CronometroEntrenamiento.setTiempoCronometro(getTiempoTotalString(entrenamiento.getTiempoPreparacion()));
-        }else{
-            CronometroEntrenamiento.setEjercicioActual(entrenamiento.getEjercicio(0));
-            CronometroEntrenamiento.setEjercicioSiguiente(entrenamiento.getEjercicio(1));
-            CronometroEntrenamiento.setTiempoCronometro(getTiempoTotalString(entrenamiento.getTiempoEjercicio()));
         }
 
-        CronometroEntrenamiento.setSerieActual("1");
-        CronometroEntrenamiento.setTabataActual("1");
+        CronometroEntrenamiento.setEjercicioActual(pasosEntrenamiento.get(i).get(2));
+        CronometroEntrenamiento.setEjercicioSiguiente(pasosEntrenamiento.get(i).get(3));
+        CronometroEntrenamiento.setTiempoCronometro(getTiempoTotalString(entrenamiento.getTiempoEjercicio()));
+        CronometroEntrenamiento.setSerieActual(pasosEntrenamiento.get(i).get(0));
+        CronometroEntrenamiento.setTabataActual(pasosEntrenamiento.get(i).get(1));
         CronometroEntrenamiento.setTiempoTotal(getTiempoString(tiempoRestante));
 
         cronometroTotal = new CountDownTimer(tiempoRestante*1000, 1000) {
@@ -68,8 +66,6 @@ public class Cronometro {
                 bd.guardarEvento(new Evento(entrenamiento.getNombre()));
             }
         };
-
-        generarPasosEntrenamiento();
     }
 
     public void iniciarCronometro(){

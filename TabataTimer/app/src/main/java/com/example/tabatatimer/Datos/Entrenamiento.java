@@ -26,7 +26,7 @@ public class Entrenamiento implements Serializable {
         IDentrenamiento= View.generateViewId();
         nombre = "Nombre del entrenamiento";
         tiempoPreparacion = 0;
-        tiempoEjercicio = 0;
+        tiempoEjercicio = 1;
         tiempoDescanso = 0;
         numeroSeries = 1;
         numeroTabatas = 1;
@@ -168,7 +168,10 @@ public class Entrenamiento implements Serializable {
     }
 
     public String getEjercicio(int pos){
-        return ejercicios.get(pos);
+        if(pos<numeroSeries)
+            return ejercicios.get(pos);
+        else
+            return "";
     }
 
     public Vector<String> getEjercicios(){
