@@ -60,6 +60,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void abrirCalendarioEntrenamientos(View view){
+        Intent intent = new Intent(this, CalendarioEntrenamientos.class);
+        startActivity(intent);
+    }
+
     public void generaScroll(){
         for(int i=0;i<entrenamientosGuardados.size();i++) {
             final int indice = i;

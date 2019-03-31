@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.tabatatimer.Datos.BaseDatos;
 import com.example.tabatatimer.Datos.Cronometro;
 import com.example.tabatatimer.Datos.Entrenamiento;
+import com.example.tabatatimer.Datos.Evento;
 
 public class CronometroEntrenamiento extends AppCompatActivity {
     Entrenamiento entrenamiento;
@@ -18,11 +20,13 @@ public class CronometroEntrenamiento extends AppCompatActivity {
     static TextView ejercicioSiguiente;
     static TextView tiempoTotal;
     static TextView tabataActual;
+    BaseDatos bd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cronometro_entrenamiento);
+        bd = new BaseDatos(this);
 
         Bundle objetoRecibido = getIntent().getExtras();
 
@@ -31,6 +35,7 @@ public class CronometroEntrenamiento extends AppCompatActivity {
             inicializarElementos();
             entrenamiento=(Entrenamiento) objetoRecibido.getSerializable("entrenamiento");
             cronometro = new Cronometro(entrenamiento);
+            cronometro.setContext(this);
         }
     }
 
@@ -91,36 +96,3 @@ public class CronometroEntrenamiento extends AppCompatActivity {
     }
 
 }
-
-/*
-temporizador = new CountDownTimer(entrenamiento.getTiempoTotal()*1000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-                if((millisUntilFinished / 1000)>=(entrenamiento.getTiempoTotal()-entrenamiento.getTiempoPreparacion())){
-                    tiempoCronometro.setBackgroundResource(R.drawable.text_view_circular_amarillo);
-                    //ejercicio_actual.setText("Preparación");
-                }else if((millisUntilFinished / 1000)>=(entrenamiento.getTiempoTotal()-entrenamiento.getTiempoPreparacion())-entrenamiento.getTiempoEjercicio() && enTiempoEjercicio<entrenamiento.getTiempoEjercicio()){
-                    tiempoCronometro.setBackgroundResource(R.drawable.text_view_circular_rojo);
-                    ejercicio_actual.setText(cronometro.getEjercicioActual());
-                    ejercicio_siguiente.setText(cronometro.getEjercicioSiguiente());
-                    //serie_actual.setText(Integer.toString(cronometro.getSerieActual()));
-                    cronometro.siguienteSerie();
-                    enTiempoEjercicio++;
-                    enTiempoDescanso=0;
-                }else if((millisUntilFinished / 1000)>=(entrenamiento.getTiempoTotal()-entrenamiento.getTiempoPreparacion())-entrenamiento.getTiempoEjercicio() - entrenamiento.getTiempoDescanso() && enTiempoDescanso<entrenamiento.getTiempoDescanso()){
-                    tiempoCronometro.setBackgroundResource(R.drawable.text_view_circular_verde);
-                    ejercicio_actual.setText("Descanso serie");
-                    enTiempoDescanso++;
-                    enTiempoEjercicio=0;
-                    serie_actual.setText(Integer.toString(cronometro.getSerieActual()));
-                    //enTiempoEjercicio=false;
-                }
-                tiempoCronometro.setText(getTiempoTotalString(millisUntilFinished / 1000));
-            }
-
-            public void onFinish() {
-                tiempoCronometro.setText("FIN");
-                temporizadorIniciado=false;
-            }
-        };
- */

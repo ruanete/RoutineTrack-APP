@@ -9,7 +9,12 @@ import android.util.Log;
 
 import com.example.tabatatimer.Datos.EntrenamientoContract.ColumnasEntrenamiento;
 import com.example.tabatatimer.Datos.EntrenamientoContract.ColumnasEjercicios;
+import com.example.tabatatimer.Datos.EventoContract.ColumnasEventos;
 
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Vector;
 
 import static com.example.tabatatimer.Datos.EntrenamientoContract.ColumnasEjercicios.NOMBRE_EJERCICIO;
@@ -45,6 +50,12 @@ public class BaseDatos extends SQLiteOpenHelper {
                 + ColumnasEjercicios.ID_ENTRENAMIENTO + " INTEGER NOT NULL REFERENCES " + ColumnasEntrenamiento.TABLE_NAME + "(" + ColumnasEntrenamiento.ID + "),"
                 + ColumnasEjercicios.ID_EJERCICIO + " INTEGER NOT NULL,"
                 + NOMBRE_EJERCICIO + " TEXT NOT NULL)"
+        );
+
+        sqLiteDatabase.execSQL("CREATE TABLE " + EventoContract.ColumnasEventos.TABLE_NAME + " ("
+                + ColumnasEventos._ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
+                + ColumnasEventos.FECHA + " DATE NOT NULL,"
+                + ColumnasEventos.DESCRIPCION + " TEXT NOT NULL)"
         );
 
     }
@@ -152,5 +163,58 @@ public class BaseDatos extends SQLiteOpenHelper {
     public void eliminarEjercicios(Entrenamiento entrenamiento){
         SQLiteDatabase bd = this.getWritableDatabase();
         bd.delete(ColumnasEjercicios.TABLE_NAME, "id_entrenamiento=" + entrenamiento.getIDentrenamiento(), null);
+    }
+
+    public void guardarEvento(Evento evento) {
+        SQLiteDatabase bd = this.getWritableDatabase();
+
+        ContentValues eventoInsertar = evento.toContentValuesEvento();
+        bd.insert(ColumnasEventos.TABLE_NAME,
+                null,
+                eventoInsertar);
+
+        bd.close();
+    }
+
+    public Vector<Evento> getEventosPorFecha(Date fecha){
+        Vector<Evento> eventos = new Vector<>();
+        String anio, mes, dia, fecha_final;
+
+        SimpleDateFormat year = new SimpleDateFormat("yyyy");
+        anio = year.format(fecha);
+
+        SimpleDateFormat month = new SimpleDateFormat("MM");
+        mes = month.format(fecha);
+
+        SimpleDateFormat day = new SimpleDateFormat("dd");
+        dia = day.format(fecha);
+
+        fecha_final = anio + "-" + mes + "-" + dia;
+
+        System.out.println("ESTAAAAAAA BUSCANDO: " + fecha_final);
+
+        String sentencia = "select fecha, descripcion from " + ColumnasEventos.TABLE_NAME + " where date(fecha)='" + fecha_final + "'";
+        Cursor cursorEventos = getReadableDatabase().rawQuery(sentencia, null);
+
+        if(cursorEventos.moveToFirst()){
+            do{
+                Evento nuevo = new Evento(cursorEventos.getString(cursorEventos.getColumnIndex("descripcion")));
+                SimpleDateFormat formato = new SimpleDateFormat("y-MM-dd HH:mm");
+                String fecha_seleccionada = cursorEventos.getString(cursorEventos.getColumnIndex("fecha"));
+
+                try {
+                    Date f = formato.parse(fecha_seleccionada);
+                    nuevo.setFecha(f);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                eventos.add(nuevo);
+            }while(cursorEventos.moveToNext());
+        }
+
+        cursorEventos.close();
+
+        return eventos;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.tabatatimer.Datos;
 
+import android.content.Context;
 import android.os.CountDownTimer;
 import android.util.Pair;
 
@@ -16,6 +17,8 @@ public class Cronometro {
     private Vector<Vector<String>> pasosEntrenamiento;
     private static boolean enProceso;
     int i = 0;
+    Context context;
+    BaseDatos bd;
 
     public Cronometro(){
         tiempoRestante = 0;
@@ -26,7 +29,12 @@ public class Cronometro {
         enProceso=false;
     }
 
-    public Cronometro(Entrenamiento entrenamiento){
+    public void setContext(Context context){
+        this.context = context;
+        bd = new BaseDatos(context);
+    }
+
+    public Cronometro(final Entrenamiento entrenamiento){
         this.entrenamiento = entrenamiento;
         long tiempoQueRestar = 1 + entrenamiento.getNumeroSeries()*entrenamiento.getNumeroTabatas();
         tiempoRestante = entrenamiento.getTiempoTotal() - tiempoQueRestar;
@@ -57,6 +65,7 @@ public class Cronometro {
 
             public void onFinish() {
                 CronometroEntrenamiento.setTiempoTotal("FIN");
+                bd.guardarEvento(new Evento(entrenamiento.getNombre()));
             }
         };
 
