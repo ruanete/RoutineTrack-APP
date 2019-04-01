@@ -200,6 +200,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="?android:selectableItemBackground"
+                        android:onClick="abrirAjustes"
                         app:srcCompat="@drawable/icono_ajuste" />
 
                     <ImageButton

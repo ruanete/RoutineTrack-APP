@@ -21,25 +21,33 @@ import com.example.tabatatimer.Datos.Entrenamiento;
 import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
-    Entrenamiento entrenamiento = null;
     BaseDatos bd = new BaseDatos(this);
     Vector<Entrenamiento> entrenamientosGuardados;
-    Entrenamiento entrenamientoEditar = null;
-    Entrenamiento entrenamientoIniciar = null;
-    boolean eliminar = false;
+    Entrenamiento entrenamientoEditar;
+    Entrenamiento entrenamientoIniciar;
+    boolean eliminar;
 
     LinearLayout layout_entrenamientos;
     Button boton_eliminar;
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         layout_entrenamientos = findViewById(R.id.layout_entrenamientos);
         boton_eliminar = findViewById(R.id.boton_eliminar);
+        entrenamientoEditar = null;
+        entrenamientoIniciar = null;
+        eliminar = false;
 
         entrenamientosGuardados = bd.getEntrenamientos();
         generaScroll(false);
+    }
+
+    public void abrirAjustes(View view){
+        Intent intent = new Intent(this, MenuAjustes.class);
+        startActivity(intent);
     }
 
     @SuppressLint("ResourceType")
@@ -92,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressWarnings("unchecked")
     public void generaScroll(final boolean eliminar){
         layout_entrenamientos.removeAllViews();
         for(int i=0;i<entrenamientosGuardados.size();i++) {

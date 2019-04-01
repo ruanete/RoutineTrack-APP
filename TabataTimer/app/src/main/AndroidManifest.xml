@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CalendarioEntrenamientos"></activity>
+        <activity android:name=".MenuAjustes"></activity>
+        <activity android:name=".CalendarioEntrenamientos" />
         <activity android:name=".CronometroEntrenamiento" />
         <activity android:name=".SiguienteNuevoEntrenamiento" />
         <activity android:name=".NuevoEntrenamiento" />
