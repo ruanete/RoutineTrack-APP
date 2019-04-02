@@ -60,18 +60,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void setDatosUsuario(){
         Vector<String> ajustes = bd.getAjustes();
+        if(!ajustes.isEmpty()) {
+            if (!ajustes.get(5).equals(""))
+                texto_peso.setText(ajustes.get(5) + "kg");
 
-        if(!ajustes.get(5).equals(""))
-            texto_peso.setText(ajustes.get(5) + "kg");
+            if (!ajustes.get(4).equals(""))
+                texto_altura.setText(ajustes.get(4) + "cm");
 
-        if(!ajustes.get(4).equals(""))
-            texto_altura.setText(ajustes.get(4) + "cm");
+            if (!ajustes.get(1).equals(""))
+                texto_nombre.setText(ajustes.get(1));
 
-        if(!ajustes.get(1).equals(""))
-            texto_nombre.setText(ajustes.get(1));
-
-        if(BitmapFactory.decodeFile(ajustes.get(0))!=null)
-            foto_perfil.setImageBitmap(BitmapFactory.decodeFile(ajustes.get(0)));
+            if (BitmapFactory.decodeFile(ajustes.get(0)) != null)
+                foto_perfil.setImageBitmap(BitmapFactory.decodeFile(ajustes.get(0)));
+        }
     }
 
     public void abrirAjustes(View view){

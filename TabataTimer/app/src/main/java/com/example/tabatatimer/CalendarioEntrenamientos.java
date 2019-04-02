@@ -1,5 +1,6 @@
 package com.example.tabatatimer;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
@@ -76,6 +77,11 @@ public class CalendarioEntrenamientos extends AppCompatActivity {
                 fecha.setText(resultantDate);
             }
         });
+    }
+
+    public void abrirAjustes(View view){
+        Intent intent = new Intent(this, MenuAjustes.class);
+        startActivity(intent);
     }
 
     public static String getDateFormattedString(String sourceFormat,String dateString,String targetFormat) {

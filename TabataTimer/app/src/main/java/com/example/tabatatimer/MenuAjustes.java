@@ -158,28 +158,30 @@ public class MenuAjustes extends AppCompatActivity {
     public void setDatosUsuario(){
         Vector<String> ajustes = bd.getAjustes();
 
-        if(!ajustes.get(0).equals(""))
-            imagen_perfil.setImageBitmap(BitmapFactory.decodeFile(ajustes.get(0)));
+        if(!ajustes.isEmpty()) {
+            if (!ajustes.get(0).equals(""))
+                imagen_perfil.setImageBitmap(BitmapFactory.decodeFile(ajustes.get(0)));
 
-        if(!ajustes.get(1).equals(""))
-            edittext_nombre.setText(ajustes.get(1));
+            if (!ajustes.get(1).equals(""))
+                edittext_nombre.setText(ajustes.get(1));
 
-        if(!ajustes.get(2).equals("")){
-            if(ajustes.get(2).equals("Masculino")){
-                opcion_masculino.setChecked(true);
-            }else if(ajustes.get(2).equals("Femenino")){
-                opcion_femenina.setChecked(true);
+            if (!ajustes.get(2).equals("")) {
+                if (ajustes.get(2).equals("Masculino")) {
+                    opcion_masculino.setChecked(true);
+                } else if (ajustes.get(2).equals("Femenino")) {
+                    opcion_femenina.setChecked(true);
+                }
             }
+
+            if (!ajustes.get(3).equals(""))
+                edittext_fecha.setText(ajustes.get(3));
+
+            if (!ajustes.get(5).equals(""))
+                edittext_peso.setText(ajustes.get(5));
+
+            if (!ajustes.get(4).equals(""))
+                edittext_altura.setText(ajustes.get(4));
         }
-
-        if(!ajustes.get(3).equals(""))
-            edittext_fecha.setText(ajustes.get(3));
-
-        if(!ajustes.get(5).equals(""))
-            edittext_peso.setText(ajustes.get(5));
-
-        if(!ajustes.get(4).equals(""))
-            edittext_altura.setText(ajustes.get(4));
     }
 
     public void volverAtras(View view){
@@ -200,7 +202,7 @@ public class MenuAjustes extends AppCompatActivity {
 
     public void leerDatos(){
         Vector<String> ajustes = bd.getAjustes();
-        if(direccion_imagen.equals("") && !ajustes.get(0).equals(""))
+        if(direccion_imagen.equals("") && !ajustes.isEmpty() && !ajustes.get(0).equals(""))
             direccion_imagen = ajustes.get(0);
 
         nombre_usuario = edittext_nombre.getText().toString();
