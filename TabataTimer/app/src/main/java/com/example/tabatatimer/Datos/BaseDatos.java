@@ -10,6 +10,7 @@ import android.util.Log;
 import com.example.tabatatimer.Datos.EntrenamientoContract.ColumnasEntrenamiento;
 import com.example.tabatatimer.Datos.EntrenamientoContract.ColumnasEjercicios;
 import com.example.tabatatimer.Datos.EventoContract.ColumnasEventos;
+import com.example.tabatatimer.Datos.AjustesContract.ColumnasAjustes;
 
 
 import java.text.ParseException;
@@ -22,8 +23,6 @@ import static com.example.tabatatimer.Datos.EntrenamientoContract.ColumnasEjerci
 public class BaseDatos extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "RoutineTracker.db";
-    private static final String SQL_CREATE_ENTRIES = "CREATE TABLE Prueba(Texto TEXT)";
-
 
     public BaseDatos(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -52,10 +51,19 @@ public class BaseDatos extends SQLiteOpenHelper {
                 + NOMBRE_EJERCICIO + " TEXT NOT NULL)"
         );
 
-        sqLiteDatabase.execSQL("CREATE TABLE " + EventoContract.ColumnasEventos.TABLE_NAME + " ("
+        sqLiteDatabase.execSQL("CREATE TABLE " + ColumnasEventos.TABLE_NAME + " ("
                 + ColumnasEventos._ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
                 + ColumnasEventos.FECHA + " DATE NOT NULL,"
                 + ColumnasEventos.DESCRIPCION + " TEXT NOT NULL)"
+        );
+
+        sqLiteDatabase.execSQL("CREATE TABLE " + ColumnasAjustes.TABLE_NAME + " ("
+                + ColumnasAjustes.URL_IMAGEN + " TEXT,"
+                + ColumnasAjustes.NOMBRE + " TEXT,"
+                + ColumnasAjustes.SEXO + " TEXT,"
+                + ColumnasAjustes.FECHA_NACIMIENTO + " DATE,"
+                + ColumnasAjustes.ALTURA + " TEXT,"
+                + ColumnasAjustes.PESO + " TEXT)"
         );
 
     }
@@ -191,8 +199,6 @@ public class BaseDatos extends SQLiteOpenHelper {
 
         fecha_final = anio + "-" + mes + "-" + dia;
 
-        System.out.println("ESTAAAAAAA BUSCANDO: " + fecha_final);
-
         String sentencia = "select fecha, descripcion from " + ColumnasEventos.TABLE_NAME + " where date(fecha)='" + fecha_final + "'";
         Cursor cursorEventos = getReadableDatabase().rawQuery(sentencia, null);
 
@@ -230,5 +236,43 @@ public class BaseDatos extends SQLiteOpenHelper {
                 new String[]{Integer.toString(entrenamiento.getIDentrenamiento())});
 
         bd.close();
+    }
+
+    public void guardarAjustes(String direccion_imagen, String nombre_usuario, String sexo, String fecha_nacimiento, String altura, String peso){
+        SQLiteDatabase bd = this.getWritableDatabase();
+
+        bd.execSQL("delete from " + ColumnasAjustes.TABLE_NAME);
+
+        ContentValues valorInsertar = new ContentValues();
+        valorInsertar.put(ColumnasAjustes.URL_IMAGEN, direccion_imagen);
+        valorInsertar.put(ColumnasAjustes.NOMBRE, nombre_usuario);
+        valorInsertar.put(ColumnasAjustes.SEXO, sexo);
+        valorInsertar.put(ColumnasAjustes.FECHA_NACIMIENTO, fecha_nacimiento);
+        valorInsertar.put(ColumnasAjustes.ALTURA, altura);
+        valorInsertar.put(ColumnasAjustes.PESO, peso);
+
+        bd.insert(ColumnasAjustes.TABLE_NAME,null, valorInsertar);
+
+        bd.close();
+    }
+
+    public Vector getAjustes(){
+        Vector<String> ajustes = new Vector<>();
+        SQLiteDatabase bd = this.getWritableDatabase();
+
+        Cursor c = bd.query(ColumnasAjustes.TABLE_NAME, null, null, null, null, null, null);
+
+        if (c.moveToFirst()) {
+            do {
+                ajustes.add(c.getString(c.getColumnIndex(ColumnasAjustes.URL_IMAGEN)));
+                ajustes.add(c.getString(c.getColumnIndex(ColumnasAjustes.NOMBRE)));
+                ajustes.add(c.getString(c.getColumnIndex(ColumnasAjustes.SEXO)));
+                ajustes.add(c.getString(c.getColumnIndex(ColumnasAjustes.FECHA_NACIMIENTO)));
+                ajustes.add(c.getString(c.getColumnIndex(ColumnasAjustes.ALTURA)));
+                ajustes.add(c.getString(c.getColumnIndex(ColumnasAjustes.PESO)));
+            } while(c.moveToNext());
+        }
+
+        return ajustes;
     }
 }

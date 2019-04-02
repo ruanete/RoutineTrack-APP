@@ -3,6 +3,7 @@ package com.example.tabatatimer;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.TypedArray;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -14,11 +15,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.tabatatimer.Datos.BaseDatos;
 import com.example.tabatatimer.Datos.Entrenamiento;
 
 import java.util.Vector;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
     BaseDatos bd = new BaseDatos(this);
@@ -29,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     LinearLayout layout_entrenamientos;
     Button boton_eliminar;
+    TextView texto_peso, texto_altura, texto_nombre;
+    CircleImageView foto_perfil;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -37,12 +43,35 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         layout_entrenamientos = findViewById(R.id.layout_entrenamientos);
         boton_eliminar = findViewById(R.id.boton_eliminar);
+        texto_peso = findViewById(R.id.texto_peso);
+        texto_altura= findViewById(R.id.texto_altura);
+        texto_nombre= findViewById(R.id.texto_nombre);
+        foto_perfil = findViewById(R.id.foto_perfil);
+
+        setDatosUsuario();
+
         entrenamientoEditar = null;
         entrenamientoIniciar = null;
         eliminar = false;
 
         entrenamientosGuardados = bd.getEntrenamientos();
         generaScroll(false);
+    }
+
+    public void setDatosUsuario(){
+        Vector<String> ajustes = bd.getAjustes();
+
+        if(!ajustes.get(5).equals(""))
+            texto_peso.setText(ajustes.get(5) + "kg");
+
+        if(!ajustes.get(4).equals(""))
+            texto_altura.setText(ajustes.get(4) + "cm");
+
+        if(!ajustes.get(1).equals(""))
+            texto_nombre.setText(ajustes.get(1));
+
+        if(BitmapFactory.decodeFile(ajustes.get(0))!=null)
+            foto_perfil.setImageBitmap(BitmapFactory.decodeFile(ajustes.get(0)));
     }
 
     public void abrirAjustes(View view){

@@ -54,18 +54,18 @@
             android:focusableInTouchMode="true">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profile_image2"
+                android:id="@+id/imagen_perfil"
                 android:layout_width="match_parent"
                 android:layout_height="170dp"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
+                android:clickable="true"
                 android:elevation="8dp"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:padding="10dp"
                 android:src="@drawable/avatar"
                 app:civ_border_color="@color/colorPrincipal"
-                app:civ_border_width="3dp"
-                android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"/>
+                app:civ_border_width="3dp" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -83,7 +83,8 @@
                 android:ems="10"
                 android:hint="Nombre completo"
                 android:inputType="textPersonName"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:maxLength="30"/>
 
             <TextView
                 android:id="@+id/textView4"
@@ -93,15 +94,17 @@
                 android:textColor="@color/colorRojoBoton" />
 
             <RadioGroup
+                android:id="@+id/grupo_sexo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
 
                 <RadioButton
                     android:id="@+id/opcion_masculino"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:checked="true"
                     android:text="Masculino" />
 
                 <RadioButton
@@ -149,7 +152,8 @@
                 android:ems="10"
                 android:hint="Altura en CM"
                 android:inputType="numberDecimal"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:maxLength="4"/>
 
             <TextView
                 android:id="@+id/textView"
@@ -167,7 +171,8 @@
                 android:ems="10"
                 android:hint="Peso en KG"
                 android:inputType="numberDecimal"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:maxLength="4"/>
 
         </LinearLayout>
 
