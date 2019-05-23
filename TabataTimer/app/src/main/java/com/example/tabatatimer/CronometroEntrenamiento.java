@@ -93,6 +93,8 @@ public class CronometroEntrenamiento extends AppCompatActivity {
         ejercicioActual = findViewById(R.id.ejercicio_actual);
         ejercicioSiguiente = findViewById(R.id.ejercicio_siguiente);
         tabataActual = findViewById(R.id.tabata_actual);
+
+        tiempoTotal.setVisibility(View.INVISIBLE);
     }
 
 }

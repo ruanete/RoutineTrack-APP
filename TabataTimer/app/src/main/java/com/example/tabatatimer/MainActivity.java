@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     Button boton_eliminar;
     TextView texto_peso, texto_altura, texto_nombre;
     CircleImageView foto_perfil;
+    ImageButton boton_casa;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -47,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
         texto_altura= findViewById(R.id.texto_altura);
         texto_nombre= findViewById(R.id.texto_nombre);
         foto_perfil = findViewById(R.id.foto_perfil);
+        boton_casa = findViewById(R.id.imageButton2);
+
+        boton_casa.setVisibility(View.INVISIBLE);
 
         setDatosUsuario();
 

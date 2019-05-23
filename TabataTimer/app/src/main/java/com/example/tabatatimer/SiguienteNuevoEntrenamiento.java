@@ -8,10 +8,12 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -24,11 +26,15 @@ public class SiguienteNuevoEntrenamiento extends AppCompatActivity {
     EditText caja_texto;
     BaseDatos bd = new BaseDatos(this);
     Boolean editar = false;
+    ImageButton boton_inicio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_siguiente_nuevo_entrenamiento);
+
+        boton_inicio = findViewById(R.id.boton_inicio);
+        boton_inicio.setVisibility(View.INVISIBLE);
 
         Bundle objetoRecibido =getIntent().getExtras();
 
@@ -54,12 +60,16 @@ public class SiguienteNuevoEntrenamiento extends AppCompatActivity {
             bd.guardarEntrenamiento(entrenamiento);
         else
             bd.editarEjerciciosEntrenamiento(entrenamiento);
-        Intent intent = new Intent(this, MainActivity.class);
+
+        Intent intent = new Intent(this, MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //= new Intent(this, MainActivity.class);
         Bundle bundle=new Bundle();
         bundle.putSerializable("entrenamiento", entrenamiento);
         intent.putExtras(bundle);
 
         startActivity(intent);
+        finish();
     }
 
     private void crearBotonEjercicio(int indice) {
@@ -68,6 +78,7 @@ public class SiguienteNuevoEntrenamiento extends AppCompatActivity {
         caja_texto = new EditText(SiguienteNuevoEntrenamiento.this);
 
         caja_texto.setHint(entrenamiento.getEjercicio(indice));
+        caja_texto.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
 
         dialogo.setView(caja_texto);
         dialogo.setTitle("Nombre del ejercicio");

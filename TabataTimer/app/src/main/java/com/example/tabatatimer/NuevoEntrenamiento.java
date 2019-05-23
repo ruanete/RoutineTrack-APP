@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.example.tabatatimer.Datos.BaseDatos;
 import com.example.tabatatimer.Datos.Entrenamiento;
@@ -22,6 +24,7 @@ public class NuevoEntrenamiento extends AppCompatActivity {
     Button boton_tabatas;
     Button boton_duracion;
     Button boton_descanso_tabata;
+    ImageButton boton_inicio;
     EditText caja_texto;
     Entrenamiento entrenamiento;
     BaseDatos bd = new BaseDatos(this);
@@ -31,6 +34,8 @@ public class NuevoEntrenamiento extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nuevo_entrenamiento);
+        boton_inicio = findViewById(R.id.boton_inicio);
+        boton_inicio.setVisibility(View.INVISIBLE);
 
         Bundle objetoRecibido = getIntent().getExtras();
 
@@ -63,13 +68,13 @@ public class NuevoEntrenamiento extends AppCompatActivity {
     public void volverAtras(View view){
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-        //finish();
+        finish();
     }
 
     public void volverInicio(View view){
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-        //finish();
+        finish();
     }
 
     public void setTextoBotones(){
@@ -100,6 +105,7 @@ public class NuevoEntrenamiento extends AppCompatActivity {
         caja_texto = new EditText(NuevoEntrenamiento.this);
 
         caja_texto.setHint(entrenamiento.getNombre());
+        caja_texto.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
 
         dialogo.setView(caja_texto);
         dialogo.setTitle("Nombre del entrenamiento");

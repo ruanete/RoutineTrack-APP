@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -31,6 +32,7 @@ public class CalendarioEntrenamientos extends AppCompatActivity {
     TextView anio, fecha;
     LinearLayout eventos_calendario;
     BaseDatos bd;
+    ImageButton boton_calendario, boton_ajustes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,11 @@ public class CalendarioEntrenamientos extends AppCompatActivity {
         anio = (TextView) findViewById(R.id.anio);
         fecha = (TextView) findViewById(R.id.fecha);
         eventos_calendario = (LinearLayout) findViewById(R.id.eventos_calendario);
+        boton_calendario = findViewById(R.id.imageButton6);
+        boton_calendario.setVisibility(View.INVISIBLE);
+        boton_ajustes = findViewById(R.id.imageButton);
+        boton_ajustes.setVisibility(View.INVISIBLE);
+
         bd = new BaseDatos(this);
 
         Date fecha_actual = new Date();
@@ -98,6 +105,10 @@ public class CalendarioEntrenamientos extends AppCompatActivity {
     }
 
     public void volverInicio(View view){
+
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(new Intent(getBaseContext(), MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
         finish();
     }
 

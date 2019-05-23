@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -42,6 +43,7 @@ public class MenuAjustes extends AppCompatActivity {
     Activity activity = this;
     String nombre_usuario="", sexo="", fecha_nacimiento="", altura="", peso="", direccion_imagen="";
     BaseDatos bd = new BaseDatos(this);
+    ImageButton boton_inicio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,9 @@ public class MenuAjustes extends AppCompatActivity {
         grupo_opcion_sexo = findViewById(R.id.grupo_sexo);
         opcion_masculino = findViewById(R.id.opcion_masculino);
         opcion_femenina = findViewById(R.id.opcion_femenino);
+        boton_inicio = findViewById(R.id.boton_inicio);
+
+        boton_inicio.setVisibility(View.INVISIBLE);
 
         setDatosUsuario();
 
@@ -185,6 +190,9 @@ public class MenuAjustes extends AppCompatActivity {
     }
 
     public void volverAtras(View view){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(new Intent(getBaseContext(), MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
         finish();
     }
 
@@ -197,7 +205,9 @@ public class MenuAjustes extends AppCompatActivity {
         leerDatos();
         bd.guardarAjustes(direccion_imagen, nombre_usuario, sexo, fecha_nacimiento, altura, peso);
         Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(getBaseContext(), MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+        finish();
     }
 
     public void leerDatos(){
