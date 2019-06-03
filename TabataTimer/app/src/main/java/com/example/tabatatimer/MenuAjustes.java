@@ -204,9 +204,8 @@ public class MenuAjustes extends AppCompatActivity {
     public void finalizarGuardadoEntrenamiento(View view){
         leerDatos();
         bd.guardarAjustes(direccion_imagen, nombre_usuario, sexo, fecha_nacimiento, altura, peso);
-        Intent intent = new Intent(this, MainActivity.class);
         startActivity(new Intent(getBaseContext(), MainActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
         finish();
     }
 
